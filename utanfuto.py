@@ -26,7 +26,7 @@ class FekezettUtanfuto(Utanfuto):
 
 class Kolcsonzo:
     def __init__(self, nev: str):
-        self._nev = nev                                              #non-public attribútum
+        self._nev = nev                                                #non-public attribútum
         self.utanfutok: List[Utanfuto] = []
         self.kolcsonzesek: List[dict] = []
 
@@ -50,24 +50,25 @@ class Kolcsonzo:
     def utanfuto_kolcsonzes(self, utanfuto_index: int, kolcsonzes_datum: datetime) -> Union[str, None]:
         if 0 <= utanfuto_index < len(self.utanfutok):
             utanfuto = self.utanfutok[utanfuto_index]
-            if kolcsonzes_datum >= datetime.now():
+            aktualis_datum = datetime.now().date()
+            if kolcsonzes_datum.date() >= aktualis_datum:
                 kolcsonzes_ara = utanfuto.ar
                 kolcsonzes = {"utanfuto": utanfuto, "datum": kolcsonzes_datum, "koltseg": kolcsonzes_ara}   #dictionary
                 self.kolcsonzesek.append(kolcsonzes)
                 return f"A kölcsönzés sikeres. Fizetendő: {kolcsonzes_ara} HUF"
             else:
-                return "Érvénytelen kölcsönzési dátum. Csak a jövőbeli dátumok érvényesek."
+                return "Érvénytelen kölcsönzési dátum. Csak az aznapi és jövőbeli dátumok érvényesek."
         else:
             return "Nincs ilyen utánfutó."                            #ugyanaz az utánfutó típus többször is kölcsönözhető ugyanarra a napra, hiszen több utánfutója is van a kölcsönzőnek, nem csak 1-1 mindegyikből
 
-    def kolcsonzes_megszuntetes(self, kolcsonzes_index: int) -> Union[str, None]:
+    def kolcsonzes_torles(self, kolcsonzes_index: int) -> Union[str, None]:
         if 0 <= kolcsonzes_index < len(self.kolcsonzesek):
             kolcsonzes = self.kolcsonzesek[kolcsonzes_index]
             if kolcsonzes['datum'] > datetime.now():
                 self.kolcsonzesek.pop(kolcsonzes_index)
-                return f"Kölcsönzés sikeresen megszüntetve. Visszatérítés: {kolcsonzes['koltseg']} HUF"
+                return f"Kölcsönzés sikeresen törölve. Visszatérítés: {kolcsonzes['koltseg']} HUF"
             else:
-                return "Az aznapi kölcsönzéseket nem lehet megszüntetni."
+                return "Az aznapi kölcsönzéseket nem lehet törölni."
         else:
             return "Nincs ilyen kölcsönzés."
 
@@ -91,7 +92,7 @@ def felhasznaloi_interakcio() -> None:
     while True:
         print("\nVálassz egy lehetőséget:")
         print("1. Utánfutó kölcsönzése")
-        print("2. Kölcsönzés megszüntetése")
+        print("2. Kölcsönzés törlése")
         print("3. Kölcsönzések listázása")
         print("4. Kilépés")
 
@@ -103,13 +104,13 @@ def felhasznaloi_interakcio() -> None:
                 print(f"{i+1}. {ut.kiiro_info()}")
             ut_index = int(input("Válassz egy utánfutót: ")) - 1
             kolcsonzes_datum = datetime.strptime(input("Add meg a kölcsönzés dátumát (YYYY-MM-DD): "), "%Y-%m-%d")
-            print(kolcsonzo.utanfuto_kolcsonzes(ut_index, kolcsonzes_datum))
+            print(kolcsonzo.utanfuto_kolcsonzes(ut_index, kolcsonzes_datum))      #azt nem ellenőrzi, hogy valóban dátum lett-e megadva, helyes formátumban
 
         elif valasztas == "2":
             if kolcsonzo.kolcsonzesek:
                 print(kolcsonzo.kolcsonzesek_listazasa())
-                kolcsonzes_index = int(input("Válassz egy kölcsönzést a megszüntetéshez: ")) - 1
-                print(kolcsonzo.kolcsonzes_megszuntetes(kolcsonzes_index))
+                kolcsonzes_index = int(input("Válassz egy kölcsönzést a törléshez: ")) - 1
+                print(kolcsonzo.kolcsonzes_torles(kolcsonzes_index))
             else:
                 print("Jelenleg nincsenek kölcsönzések.")
 
