@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from typing import List, Union
 
-class Utanfuto(ABC):                                        #absztrakt osztaly
+class Utanfuto(ABC):                                                   #absztrakt osztaly
     def __init__(self, tipus: str, ar: int, terhelhetoseg: int):      #használok type hinting-et
         self.tipus = tipus
         self.ar = ar
         self.terhelhetoseg = terhelhetoseg
 
-    @abstractmethod                                        #absztrakt metódus
+    @abstractmethod                                                   #absztrakt metódus
     def kiiro_info(self) -> str:
         pass
 
@@ -26,11 +26,11 @@ class FekezettUtanfuto(Utanfuto):
 
 class Kolcsonzo:
     def __init__(self, nev: str):
-        self._nev = nev                                        #non-public attribútum
+        self._nev = nev                                              #non-public attribútum
         self.utanfutok: List[Utanfuto] = []
         self.kolcsonzesek: List[dict] = []
 
-    def tesztadatok_betoltese(self) -> None:                    #tesztadatok betöltése
+    def tesztadatok_betoltese(self) -> None:                           #tesztadatok betöltése
         ponyvas_utanfuto = PonyvasUtanfuto("Ponyvás utánfutó", 5000, 1000)
         autoszallito_utanfuto = AutoszallitoUtanfuto("Autószállító utánfutó", 6000, 1500)
         fekezett_utanfuto = FekezettUtanfuto("Fékezett utánfutó", 4500, 1200)
@@ -39,7 +39,7 @@ class Kolcsonzo:
         self.utanfuto_hozzaadas(autoszallito_utanfuto)
         self.utanfuto_hozzaadas(fekezett_utanfuto)
 
-        kezdo_datum = datetime.now() + timedelta(days=1)         #a példakölcsönzések holnapiak, hogy lehessen törölni őket
+        kezdo_datum = datetime.now() + timedelta(days=1)               #a példakölcsönzések holnapiak, hogy lehessen törölni őket
         self.utanfuto_kolcsonzes(0, kezdo_datum)
         self.utanfuto_kolcsonzes(1, kezdo_datum)
         self.utanfuto_kolcsonzes(2, kezdo_datum)
@@ -58,7 +58,7 @@ class Kolcsonzo:
             else:
                 return "Érvénytelen kölcsönzési dátum. Csak a jövőbeli dátumok érvényesek."
         else:
-            return "Nincs ilyen utánfutó."                          #ugyanaz az utánfutó típus többször is kölcsönözhető ugyanarra a napra, hiszen több utánfutója is van a kölcsönzőnek, nem csak 1-1 mindegyikből
+            return "Nincs ilyen utánfutó."                            #ugyanaz az utánfutó típus többször is kölcsönözhető ugyanarra a napra, hiszen több utánfutója is van a kölcsönzőnek, nem csak 1-1 mindegyikből
 
     def kolcsonzes_megszuntetes(self, kolcsonzes_index: int) -> Union[str, None]:
         if 0 <= kolcsonzes_index < len(self.kolcsonzesek):
@@ -78,7 +78,7 @@ class Kolcsonzo:
                                 for index, kolcsonzes in enumerate(self.kolcsonzesek)])
         return f"\nJelenlegi kölcsönzések:\n{kolcsonzes_lista}"
 
-    @property                                                      #property decorator a getter elé
+    @property                                                         #property decorator a getter elé
     def nev(self) -> str:
         return self._nev
 
